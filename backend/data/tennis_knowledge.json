@@ -1,0 +1,25 @@
+{
+    "articles": [
+        {
+            "id": "technique_001",
+            "title": "Tennis Serve Fundamentals",
+            "text": "The tennis serve is one of the most important shots in tennis. The key elements of a good serve include: proper grip (continental), ball toss consistency, knee bend for power, and follow-through. Common mistakes include incorrect grip position, poor ball toss, and lack of proper weight transfer.",
+            "category": "technique",
+            "url": "https://www.example.com/tennis-serve-guide"
+        },
+        {
+            "id": "equipment_001",
+            "title": "Choosing the Right Tennis Racket",
+            "text": "Selecting a tennis racket depends on several factors: player level, playing style, and physical attributes. Key specifications include head size (95-110 sq inches), weight (250-330g), balance point, and string pattern. Beginners should generally start with lighter rackets with larger head sizes for more power and forgiveness.",
+            "category": "equipment",
+            "url": "https://www.example.com/tennis-racket-guide"
+        },
+        {
+            "id": "rules_001",
+            "title": "Tennis Scoring System",
+            "text": "Tennis scoring proceeds as follows: points are scored as 0 (Love), 15, 30, 40, and game. Players must win by two clear points. A set is won when a player wins six games with a two-game advantage. In professional tennis, matches are typically best of three or five sets.",
+            "category": "rules",
+            "url": "https://www.example.com/tennis-rules"
+        }
+    ]
+}
