@@ -56,7 +56,10 @@ export default function QuestionSuggestions({ onSelectQuestion }: QuestionSugges
     }, [activeCategory]);
 
     const handleQuestionSelect = (question: string) => {
-        const newSearchParams = new URLSearchParams(searchParams);
+        const newSearchParams = new URLSearchParams();
+        searchParams.forEach((value, key) => {
+            newSearchParams.set(key, value);
+        });
         newSearchParams.set('q', question);
         router.push(`/?${newSearchParams.toString()}`, { scroll: false });
         onSelectQuestion(question);

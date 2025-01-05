@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Flame, Trophy, Target, CheckCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import QueryInput from '@/components/QueryInput';
@@ -44,49 +44,21 @@ export default function Home() {
     const [activeCitation, setActiveCitation] = useState<number | null>(null);
     const [matches, setMatches] = useState<Match[]>([]);
     const [queryHistory, setQueryHistory] = useState<string[]>([]);
-    const [isClient, setIsClient] = useState(false);
 
-    // Set isClient to true on mount
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    // Initialize query history from localStorage after component mounts
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('queryHistory');
-            if (saved) {
-                setQueryHistory(JSON.parse(saved));
-            }
-        }
-    }, []);
-
-    // Load initial query from URL if present
-    useEffect(() => {
-        const queryParam = searchParams.get('q');
-        if (queryParam && queryParam !== currentQuestion) {
-            setCurrentQuestion(queryParam);
-            handleQuery(queryParam);
-        }
-    }, [searchParams]);
-
-    // Save query history to localStorage
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
-        }
-    }, [queryHistory]);
-
-    const addToHistory = (question: string) => {
+    const addToHistory = useCallback((question: string) => {
         setQueryHistory(prev => {
             const filtered = prev.filter(q => q !== question); // Remove if exists
             return [question, ...filtered].slice(0, MAX_HISTORY); // Add to front and limit size
         });
-    };
+    }, []);
 
-    const handleQuery = async (question: string) => {
+    const handleQuery = useCallback(async (question: string) => {
         // Update URL with the new query
-        const newSearchParams = new URLSearchParams(searchParams);
+        const newSearchParams = new URLSearchParams();
+        // Copy over existing params
+        searchParams.forEach((value, key) => {
+            newSearchParams.set(key, value);
+        });
         newSearchParams.set('q', question);
         router.push(`/?${newSearchParams.toString()}`, { scroll: false });
 
@@ -125,7 +97,33 @@ export default function Home() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchParams, router, addToHistory]);
+
+    // Initialize query history from localStorage after component mounts
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('queryHistory');
+            if (saved) {
+                setQueryHistory(JSON.parse(saved));
+            }
+        }
+    }, []);
+
+    // Load initial query from URL if present
+    useEffect(() => {
+        const queryParam = searchParams.get('q');
+        if (queryParam && queryParam !== currentQuestion) {
+            setCurrentQuestion(queryParam);
+            handleQuery(queryParam);
+        }
+    }, [searchParams, currentQuestion, handleQuery]);
+
+    // Save query history to localStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
+        }
+    }, [queryHistory]);
 
     const handleCitationClick = (citationNumber: number, event: React.MouseEvent) => {
         event.preventDefault();
