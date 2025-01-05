@@ -3,7 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from ..services.rag_service import TennisRAGService
 import logging
+import os
+from dotenv import load_dotenv
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
@@ -11,7 +15,11 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://tennistorch.vercel.app",
+        "https://*.vercel.app",  # Allow all Vercel deployments during development
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
