@@ -33,7 +33,7 @@ export default function QueryInput({ onSubmit, disabled, value, onChange }: Quer
     return (
         <form onSubmit={handleSubmit} className="relative group">
             {/* Glow effect */}
-            <div className={`absolute -inset-0.5 bg-gradient-to-r from-amber-500 via-green-500 to-amber-500 rounded-lg blur opacity-0 group-hover:opacity-20 transition duration-500 ${isFocused ? 'opacity-20' : ''}`} />
+            <div className={`absolute -inset-0.5 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 rounded-lg blur opacity-0 group-hover:opacity-20 transition duration-500 ${isFocused ? 'opacity-20' : ''}`} />
 
             <div className="relative bg-white shadow-xl rounded-lg">
                 <div className="flex items-center px-4 py-3">
@@ -50,7 +50,7 @@ export default function QueryInput({ onSubmit, disabled, value, onChange }: Quer
                     <button
                         type="submit"
                         disabled={disabled || !inputValue.trim()}
-                        className="ml-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-md flex items-center gap-2 hover:from-amber-600 hover:to-amber-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="ml-4 px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-md flex items-center gap-2 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {disabled ? (
                             <div className="flex items-center gap-2">
@@ -67,7 +67,7 @@ export default function QueryInput({ onSubmit, disabled, value, onChange }: Quer
                 </div>
 
                 {/* Tennis ball seam decoration */}
-                <div className="absolute left-0 right-0 -bottom-1 h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
+                <div className="absolute left-0 right-0 -bottom-1 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
             </div>
         </form>
     );

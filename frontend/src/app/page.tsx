@@ -34,6 +34,18 @@ interface QueryResponse {
 
 const MAX_HISTORY = 5; // Maximum number of queries to keep in history
 
+const getTournamentFlag = (tournamentName: string): string | null => {
+    // Map of Grand Slam tournaments to their country flags
+    const grandSlamFlags: { [key: string]: string } = {
+        'Australian Open': '🇦🇺',
+        'French Open': '🇫🇷',
+        'Roland Garros': '🇫🇷', // Alternative name for French Open
+        'Wimbledon': '🇬🇧',
+        'US Open': '🇺🇸'
+    };
+    return grandSlamFlags[tournamentName] || null;
+};
+
 export default function Home() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -112,11 +124,12 @@ export default function Home() {
     // Load initial query from URL if present
     useEffect(() => {
         const queryParam = searchParams.get('q');
-        if (queryParam && queryParam !== currentQuestion) {
+        // Only trigger search on initial load if there's a query parameter
+        if (queryParam && !currentQuestion) {
             setCurrentQuestion(queryParam);
             handleQuery(queryParam);
         }
-    }, [searchParams, currentQuestion, handleQuery]);
+    }, []); // Only run on mount
 
     // Save query history to localStorage
     useEffect(() => {
@@ -199,17 +212,24 @@ export default function Home() {
                 {/* Tournament Header */}
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                        {match.tournament_country && (
-                            <div className="font-mono text-xs px-2 py-1 bg-white/70 backdrop-blur-sm rounded-md border border-emerald-900/5 
-                                shadow-sm transition-all duration-300 group-hover:bg-white/90">
-                                {getCountryDisplay(match.tournament_country)}
-                            </div>
-                        )}
-                        <div>
-                            <div className="font-serif text-emerald-900 text-lg transition-colors duration-300 
-                                group-hover:text-emerald-800">{match.tournament_name}</div>
-                            <div className="text-xs text-emerald-600/90 font-serif tracking-wide">
-                                {getTournamentLevelName(match.tournament_level)} • {match.surface} • {match.round}
+                        <div className="flex items-center gap-2">
+                            {match.tournament_country && (
+                                <div className="font-mono text-xs px-2 py-1 bg-white/70 backdrop-blur-sm rounded-md border border-emerald-900/5 
+                                    shadow-sm transition-all duration-300 group-hover:bg-white/90">
+                                    {getCountryDisplay(match.tournament_country)}
+                                </div>
+                            )}
+                            <div>
+                                <div className="font-serif text-emerald-900 text-lg transition-colors duration-300 
+                                    group-hover:text-emerald-800 flex items-center gap-2">
+                                    {match.tournament_name}
+                                    {getTournamentFlag(match.tournament_name) && (
+                                        <span className="text-base">{getTournamentFlag(match.tournament_name)}</span>
+                                    )}
+                                </div>
+                                <div className="text-xs text-emerald-600/90 font-serif tracking-wide">
+                                    {getTournamentLevelName(match.tournament_level)} • {match.surface} • {match.round}
+                                </div>
                             </div>
                         </div>
                     </div>
