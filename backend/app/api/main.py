@@ -6,6 +6,9 @@ import logging
 import os
 from dotenv import load_dotenv
 
+# Load environment variables
+load_dotenv()
+
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,6 +37,12 @@ class QueryResponse(BaseModel):
     answer: str
     sources: list
     confidence_score: float
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint that doesn't require any environment variables"""
+    return {"status": "healthy"}
 
 
 @app.post("/api/query")
