@@ -18,7 +18,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://*.vercel.app",  # Allow all Vercel deployments
+        "https://tennistorch.vercel.app",
+        "https://tennistorch-backend.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
