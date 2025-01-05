@@ -1,41 +1,5 @@
-import { Flame, Trophy, Target, Book, ChevronRight, BarChart2, Settings } from 'lucide-react';
+import { Flame, Target, Book, ChevronRight, BarChart2, Settings } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-
-interface Citation {
-    id: number;
-    winner: string;
-    loser: string;
-    score: string;
-    date: string;
-    tournament: string;
-}
-
-interface CitationPopoverProps {
-    citation: Citation;
-    isVisible: boolean;
-    position: { x: number; y: number };
-}
-
-const CitationPopover: React.FC<CitationPopoverProps> = ({ citation, isVisible, position }) => {
-    if (!isVisible) return null;
-
-    return (
-        <div
-            className="absolute bg-white shadow-lg rounded-lg p-4 z-50 border border-gray-200"
-            style={{ top: position.y, left: position.x }}
-        >
-            <div className="text-sm">
-                <div className="font-bold">{citation.tournament}</div>
-                <div>{citation.date}</div>
-                <div>
-                    {citation.winner} def. {citation.loser}
-                </div>
-                <div>{citation.score}</div>
-            </div>
-        </div>
-    );
-};
 
 export default function Sidebar() {
     return (

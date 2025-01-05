@@ -1,13 +1,21 @@
-interface Citation {
-    id: number;
-    winner: string;
-    loser: string;
+export interface Match {
+    match_id: string;
+    description: string;
+    tournament_name: string;
+    tournament_level: string;
+    tournament_country: string;
+    surface: string;
+    round: string;
+    winner_name: string;
+    winner_country: string;
+    loser_name: string;
+    loser_country: string;
     score: string;
-    date: string;
-    tournament: string;
+    similarity: number;
 }
 
-interface ChatResponse {
-    text: string;
-    citations: Citation[];
+export interface QueryResponse {
+    matches: Match[];
+    analysis: string;
+    response: string;
 } 

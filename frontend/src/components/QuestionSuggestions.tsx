@@ -5,7 +5,9 @@ interface QuestionSuggestionsProps {
     onSelectQuestion: (question: string) => void;
 }
 
-const categories = {
+type CategoryKey = 'Head-to-Head' | 'Historical' | 'Statistics' | 'Analysis';
+
+const categories: Record<CategoryKey, string[]> = {
     'Head-to-Head': [
         "Compare Nadal and Federer's performance on clay courts from 2005-2010",
         "What's the head-to-head record between Djokovic and Murray at Grand Slams?",
@@ -28,7 +30,7 @@ const categories = {
     ],
 };
 
-const categoryIcons = {
+const categoryIcons: Record<CategoryKey, React.ElementType> = {
     'Head-to-Head': Users,
     'Historical': History,
     'Statistics': TrendingUp,
@@ -36,15 +38,13 @@ const categoryIcons = {
 };
 
 export default function QuestionSuggestions({ onSelectQuestion }: QuestionSuggestionsProps) {
-    const [activeCategory, setActiveCategory] = useState('Head-to-Head');
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [activeCategory, setActiveCategory] = useState<CategoryKey>('Head-to-Head');
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
             setIsAnimating(true);
             setTimeout(() => {
-                setCurrentIndex((prev) => (prev + 1) % categories[activeCategory].length);
                 setIsAnimating(false);
             }, 500);
         }, 4000);
@@ -56,15 +56,15 @@ export default function QuestionSuggestions({ onSelectQuestion }: QuestionSugges
         <div className="mt-8">
             {/* Category Tabs */}
             <div className="flex space-x-4 mb-6 border-b border-slate-200">
-                {Object.entries(categories).map(([category, _]) => {
+                {(Object.entries(categories) as [CategoryKey, string[]][]).map(([category, _]) => {
                     const Icon = categoryIcons[category];
                     return (
                         <button
                             key={category}
                             onClick={() => setActiveCategory(category)}
                             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors relative ${activeCategory === category
-                                    ? 'text-amber-500 border-b-2 border-amber-500'
-                                    : 'text-slate-600 hover:text-slate-900'
+                                ? 'text-amber-500 border-b-2 border-amber-500'
+                                : 'text-slate-600 hover:text-slate-900'
                                 }`}
                         >
                             <Icon className="w-4 h-4" />

@@ -3,12 +3,9 @@
 import { useState } from 'react';
 import { Flame, Trophy, Target, CheckCircle } from 'lucide-react';
 import QueryInput from '@/components/QueryInput';
-import ResponseDisplay from '@/components/ResponseDisplay';
-import Navbar from '@/components/Navbar';
-import CategoryGrid from '@/components/CategoryGrid';
-import { TennisResponse } from '@/types';
 import Sidebar from '@/components/Sidebar';
 import { Citation } from '@/components/Citation';
+import { getTournamentLevelName, getCountryDisplay, getSurfaceStyles } from './utils';
 
 // Add new type definitions for the backend response
 interface Match {
@@ -33,43 +30,12 @@ interface QueryResponse {
     response: string;
 }
 
-const getTournamentLevelName = (level: string): string => {
-    const levelMap: { [key: string]: string } = {
-        'G': 'Grand Slam',
-        'M': 'Masters 1000',
-        'F': 'Tour Finals',
-        'A': 'ATP 500',
-        'B': 'ATP 250',
-        'D': 'Davis Cup'
-    };
-    return levelMap[level] || level;
-};
-
-// Replace the getCountryFlag function with a more elegant country display
-const getCountryDisplay = (countryCode: string): string => {
-    if (!countryCode) return '';
-    return countryCode.toUpperCase();
-};
-
-// Add this helper function to get surface-specific styles
-const getSurfaceStyles = (surface: string): string => {
-    const surfaceMap: { [key: string]: string } = {
-        'Hard': 'bg-gradient-to-b from-blue-500/5 to-blue-600/5 border border-blue-900/10 hover:from-blue-500/10 hover:to-blue-600/10',
-        'Clay': 'bg-gradient-to-b from-orange-600/5 to-orange-700/5 border border-orange-900/10 hover:from-orange-600/10 hover:to-orange-700/10',
-        'Grass': 'bg-gradient-to-b from-emerald-500/5 to-emerald-600/5 border border-emerald-900/10 hover:from-emerald-500/10 hover:to-emerald-600/10',
-        'Carpet': 'bg-gradient-to-b from-slate-200/50 to-slate-300/50 border border-slate-400/20 hover:from-slate-200/60 hover:to-slate-300/60',
-    };
-    return `${surfaceMap[surface] || 'bg-white/90 border border-slate-200/20'} transition-all duration-300`;
-};
-
 export default function Home() {
     const [response, setResponse] = useState<QueryResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [highlightedMatch, setHighlightedMatch] = useState<number | null>(null);
     const [currentQuestion, setCurrentQuestion] = useState('');
     const [activeCitation, setActiveCitation] = useState<number | null>(null);
-    const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
     const [matches, setMatches] = useState<Match[]>([]);
 
     const handleQuery = async (question: string) => {
@@ -339,7 +305,6 @@ export default function Home() {
                                                     key={match.match_id}
                                                     match={match}
                                                     index={index}
-                                                    className="match-card"
                                                 />
                                             ))}
                                         </div>
