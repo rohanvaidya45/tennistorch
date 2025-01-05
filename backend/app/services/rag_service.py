@@ -1,6 +1,7 @@
 from typing import Dict, List, Tuple
 from .vector_store import TennisVectorStore
 from openai import AsyncOpenAI
+from langchain.schema import Document
 import logging
 import json
 import re
