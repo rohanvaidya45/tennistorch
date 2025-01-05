@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 
 interface QueryInputProps {
@@ -10,12 +10,24 @@ interface QueryInputProps {
 
 export default function QueryInput({ onSubmit, disabled, value, onChange }: QueryInputProps) {
     const [isFocused, setIsFocused] = useState(false);
+    const [inputValue, setInputValue] = useState(value);
+
+    // Update internal state when value prop changes
+    useEffect(() => {
+        setInputValue(value);
+    }, [value]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (value.trim()) {
-            onSubmit(value);
+        if (inputValue.trim()) {
+            onSubmit(inputValue);
         }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        setInputValue(newValue);
+        onChange(newValue);
     };
 
     return (
@@ -27,8 +39,8 @@ export default function QueryInput({ onSubmit, disabled, value, onChange }: Quer
                 <div className="flex items-center px-4 py-3">
                     <input
                         type="text"
-                        value={value}
-                        onChange={(e) => onChange(e.target.value)}
+                        value={inputValue}
+                        onChange={handleChange}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder="Ask about tennis history"
@@ -37,7 +49,7 @@ export default function QueryInput({ onSubmit, disabled, value, onChange }: Quer
                     />
                     <button
                         type="submit"
-                        disabled={disabled || !value.trim()}
+                        disabled={disabled || !inputValue.trim()}
                         className="ml-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-md flex items-center gap-2 hover:from-amber-600 hover:to-amber-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {disabled ? (

@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flame, Trophy, Target, CheckCircle } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import QueryInput from '@/components/QueryInput';
 import Sidebar from '@/components/Sidebar';
 import { Citation } from '@/components/Citation';
+import QueryHistory from '@/components/QueryHistory';
 import { getTournamentLevelName, getCountryDisplay, getSurfaceStyles } from './utils';
 
 // Add new type definitions for the backend response
@@ -30,17 +32,68 @@ interface QueryResponse {
     response: string;
 }
 
+const MAX_HISTORY = 5; // Maximum number of queries to keep in history
+
 export default function Home() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [response, setResponse] = useState<QueryResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentQuestion, setCurrentQuestion] = useState('');
     const [activeCitation, setActiveCitation] = useState<number | null>(null);
     const [matches, setMatches] = useState<Match[]>([]);
+    const [queryHistory, setQueryHistory] = useState<string[]>([]);
+    const [isClient, setIsClient] = useState(false);
+
+    // Set isClient to true on mount
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    // Initialize query history from localStorage after component mounts
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('queryHistory');
+            if (saved) {
+                setQueryHistory(JSON.parse(saved));
+            }
+        }
+    }, []);
+
+    // Load initial query from URL if present
+    useEffect(() => {
+        const queryParam = searchParams.get('q');
+        if (queryParam && queryParam !== currentQuestion) {
+            setCurrentQuestion(queryParam);
+            handleQuery(queryParam);
+        }
+    }, [searchParams]);
+
+    // Save query history to localStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
+        }
+    }, [queryHistory]);
+
+    const addToHistory = (question: string) => {
+        setQueryHistory(prev => {
+            const filtered = prev.filter(q => q !== question); // Remove if exists
+            return [question, ...filtered].slice(0, MAX_HISTORY); // Add to front and limit size
+        });
+    };
 
     const handleQuery = async (question: string) => {
-        // Update the current question
+        // Update URL with the new query
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set('q', question);
+        router.push(`/?${newSearchParams.toString()}`, { scroll: false });
+
+        // Update the current question and history
         setCurrentQuestion(question);
+        addToHistory(question);
+
         // Clear previous response, error, and citation state
         setResponse(null);
         setError(null);
@@ -243,9 +296,23 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <p className="text-emerald-800 relative z-10 text-lg font-serif leading-relaxed max-w-2xl">
+                        <p className="text-emerald-800 relative z-10 text-lg font-serif leading-relaxed max-w-2xl mb-8">
                             Discover the distinguished history of tennis through our comprehensive knowledge base of every single professional ATP match played in the Open Era.
                         </p>
+
+                        {/* Query History */}
+                        <QueryHistory queries={queryHistory} onSelectQuery={handleQuery} />
+
+                        {/* Query Input with restored styling */}
+                        <div className="relative backdrop-blur-sm bg-white/50 rounded-xl p-1 border border-emerald-900/10 
+                            shadow-lg hover:shadow-xl transition-all duration-300">
+                            <QueryInput
+                                onSubmit={handleQuery}
+                                disabled={loading}
+                                value={currentQuestion}
+                                onChange={setCurrentQuestion}
+                            />
+                        </div>
                     </div>
 
                     {/* Enhanced Query Section */}
@@ -257,16 +324,6 @@ export default function Home() {
                         {/* Tennis ball pattern background */}
                         <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#065f46_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-                        </div>
-
-                        <div className="relative backdrop-blur-sm bg-white/50 rounded-xl p-1 border border-emerald-900/10 
-                            shadow-lg hover:shadow-xl transition-all duration-300">
-                            <QueryInput
-                                onSubmit={handleQuery}
-                                disabled={loading}
-                                value={currentQuestion}
-                                onChange={setCurrentQuestion}
-                            />
                         </div>
 
                         {loading && <LoadingState />}

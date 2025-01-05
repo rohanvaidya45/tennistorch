@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, History, Trophy, TrendingUp, Users } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface QuestionSuggestionsProps {
     onSelectQuestion: (question: string) => void;
@@ -38,6 +39,8 @@ const categoryIcons: Record<CategoryKey, React.ElementType> = {
 };
 
 export default function QuestionSuggestions({ onSelectQuestion }: QuestionSuggestionsProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [activeCategory, setActiveCategory] = useState<CategoryKey>('Head-to-Head');
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -51,6 +54,13 @@ export default function QuestionSuggestions({ onSelectQuestion }: QuestionSugges
 
         return () => clearInterval(interval);
     }, [activeCategory]);
+
+    const handleQuestionSelect = (question: string) => {
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set('q', question);
+        router.push(`/?${newSearchParams.toString()}`, { scroll: false });
+        onSelectQuestion(question);
+    };
 
     return (
         <div className="mt-8">
@@ -79,7 +89,7 @@ export default function QuestionSuggestions({ onSelectQuestion }: QuestionSugges
                 {categories[activeCategory].map((question, index) => (
                     <button
                         key={index}
-                        onClick={() => onSelectQuestion(question)}
+                        onClick={() => handleQuestionSelect(question)}
                         className={`text-left p-4 bg-white border border-slate-200 rounded-lg hover:border-amber-500 hover:shadow-md transition-all text-sm text-slate-600 hover:text-slate-900 group ${isAnimating ? 'opacity-0' : 'opacity-100'
                             }`}
                     >

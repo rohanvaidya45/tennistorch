@@ -1,5 +1,4 @@
-import { Flame, Target, Book, ChevronRight, BarChart2, Settings } from 'lucide-react';
-import Link from 'next/link';
+import { Flame } from 'lucide-react';
 
 export default function Sidebar() {
     return (
@@ -7,18 +6,30 @@ export default function Sidebar() {
             {/* Logo Section */}
             <div className="p-6 border-b border-slate-200">
                 <div className="flex items-center">
-                    <div className="flex items-center gap-2.5">
-                        <Flame
-                            className="w-[32px] h-[32px]"
-                            fill="#FF8A00"
-                            stroke="none"
-                        />
-                        <div>
-                            <span className="text-[18px] tracking-[-0.01em]">
-                                <span className="text-slate-900 font-semibold">Tennis</span>
-                                <span className="text-amber-500 font-bold">Torch</span>
+                    <div className="flex items-center space-x-3.5 group cursor-pointer">
+                        <div className="relative">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-amber-600 rounded-full blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                            <Flame
+                                className="w-10 h-10 transform group-hover:scale-110 transition-all duration-300 ease-out relative"
+                                fill="url(#logo-gradient)"
+                                stroke="none"
+                            />
+                            <svg className="absolute" width="0" height="0">
+                                <defs>
+                                    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stopColor="#FF8A00" />
+                                        <stop offset="50%" stopColor="#FFA53D" />
+                                        <stop offset="100%" stopColor="#FFB366" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-2xl tracking-tight leading-none">
+                                <span className="font-bold text-slate-800 drop-shadow-sm">Tennis</span>
+                                <span className="bg-gradient-to-br from-amber-500 via-amber-400 to-amber-500 bg-clip-text text-transparent font-extrabold">Torch</span>
                             </span>
-                            <div className="text-[11px] text-slate-400 font-medium tracking-wider mt-0.5">
+                            <div className="text-[10px] text-slate-400 font-semibold tracking-[0.25em] mt-2.5 pl-0.5 group-hover:text-amber-500 transition-colors duration-300">
                                 ILLUMINATING THE GAME
                             </div>
                         </div>
@@ -26,22 +37,8 @@ export default function Sidebar() {
                 </div>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 p-4">
-                <div className="space-y-1">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className="flex items-center px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 rounded-lg group transition-colors"
-                        >
-                            <item.icon className="w-5 h-5 mr-3 text-slate-400 group-hover:text-amber-500 transition-colors" />
-                            {item.name}
-                            <ChevronRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-slate-400" />
-                        </Link>
-                    ))}
-                </div>
-            </nav>
+            {/* Spacer */}
+            <div className="flex-1" />
 
             {/* Stats Section */}
             <div className="p-4 border-t border-slate-200">
@@ -63,12 +60,4 @@ export default function Sidebar() {
             </div>
         </div>
     );
-}
-
-const navItems = [
-    { name: 'Search', icon: Flame, href: '/' },
-    { name: 'Techniques', icon: Target, href: '/techniques' },
-    { name: 'Statistics', icon: BarChart2, href: '/stats' },
-    { name: 'Library', icon: Book, href: '/library' },
-    { name: 'Settings', icon: Settings, href: '/settings' },
-]; 
+} 
