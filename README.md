@@ -1,6 +1,76 @@
 # TennisTorch 🎾
 
-TennisTorch is an AI-powered tennis analytics platform that provides insights and answers questions about tennis matches and statistics.
+TennisTorch is an AI-powered tennis analytics platform that provides insights and answers questions about tennis matches and statistics from the Open Era. The platform features a beautiful, modern interface with real-time semantic search capabilities.
+
+## Features
+
+- 🤖 AI-powered natural language interface for tennis queries
+- 📊 Comprehensive ATP match data from the Open Era
+- 🔍 Semantic search with citation support
+- 🏆 Detailed tournament and match information
+- 🎾 Surface-specific styling and match context
+- 📜 Query history with quick access to previous searches
+- ⚡ Real-time updates and responsive design
+
+## Tech Stack
+
+### Frontend
+- Next.js 14 with App Router
+- TailwindCSS for styling
+- Lucide icons
+- Modern UI components with tennis-themed design
+- Responsive and accessible interface
+
+### Backend
+- FastAPI for the REST API
+- OpenAI's GPT models for natural language processing
+- Pinecone for vector similarity search
+- Python for data processing and analysis
+
+## System Architecture
+
+```mermaid
+graph TB
+    subgraph Frontend["Frontend (Next.js)"]
+        UI[User Interface]
+        QH[Query History]
+        CS[Citation System]
+    end
+
+    subgraph Backend["Backend (FastAPI)"]
+        API[API Layer]
+        RAG[RAG Service]
+        DP[Data Processor]
+    end
+
+    subgraph External["External Services"]
+        OPEN[OpenAI API]
+        PIN[Pinecone Vector DB]
+        ATP[ATP Match Data]
+    end
+
+    %% Frontend interactions
+    UI --> |User Query| API
+    API --> |Response| UI
+    UI --> |Manage| QH
+    UI --> |Display| CS
+
+    %% Backend processing
+    API --> |Process Query| RAG
+    RAG --> |Embed Query| OPEN
+    RAG --> |Vector Search| PIN
+    DP --> |Ingest| PIN
+    ATP --> |Source| DP
+
+    %% Data flow
+    PIN --> |Relevant Matches| RAG
+    OPEN --> |Embeddings| RAG
+    RAG --> |Formatted Response| API
+
+    style Frontend fill:#f0f7ff,stroke:#0066cc
+    style Backend fill:#f5fff0,stroke:#009933
+    style External fill:#fff0f0,stroke:#cc0000
+```
 
 ## Prerequisites
 
@@ -14,13 +84,26 @@ TennisTorch is an AI-powered tennis analytics platform that provides insights an
 
 ```
 tennistorch/
-├── backend/           # FastAPI backend
-│   ├── app/          # Main application code
-│   ├── scripts/      # Data ingestion scripts
-│   └── requirements.txt
-└── frontend/         # Next.js frontend
-    ├── src/
-    └── package.json
+├── backend/                # FastAPI backend
+│   ├── app/
+│   │   ├── api/           # API endpoints and routing
+│   │   ├── services/      # Business logic and services
+│   │   ├── data/          # Data processing and management
+│   │   ├── utils/         # Utility functions and helpers
+│   │   └── main.py        # Application entry point
+│   ├── scripts/           # Data ingestion scripts
+│   └── requirements.txt   # Python dependencies
+│
+├── frontend/              # Next.js frontend
+│   ├── src/
+│   │   ├── app/          # Next.js 14 app directory
+│   │   ├── components/   # Reusable React components
+│   │   └── types/        # TypeScript type definitions
+│   ├── public/           # Static assets
+│   ├── package.json      # Node.js dependencies
+│   └── tailwind.config.js # Tailwind CSS configuration
+│
+└── README.md             # Project documentation
 ```
 
 ## Local Development Setup
@@ -35,7 +118,7 @@ cd backend
 2. Create and activate a virtual environment:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+source venv/bin/activate
 ```
 
 3. Install dependencies:
@@ -108,7 +191,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 1. From the backend directory with your virtual environment activated:
 ```bash
-uvicorn app.api.main:app --reload
+python -m uvicorn app.main:app --reload --port 8000
 ```
 The backend will be available at `http://localhost:8000`
 
@@ -126,6 +209,8 @@ yarn dev
 ```
 The frontend will be available at `http://localhost:3000`
 
+
+
 ## Deployment
 
 ### Backend Deployment (Vercel)
@@ -134,17 +219,19 @@ The frontend will be available at `http://localhost:3000`
 2. Connect your GitHub repository
 3. Set the following configuration:
    - Framework Preset: Other
-   - Root Directory: backend
-   - Build Command: pip install -r requirements.txt
-   - Output Directory: .
-   - Install Command: pip install -r requirements.txt
-   - Development Command: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT
+   - Root Directory: `backend`
+   - Build Command: `pip install -r requirements.txt`
+   - Output Directory: `.`
+   - Install Command: `pip install -r requirements.txt`
+
 
 4. Add the following environment variables in Vercel:
-   - OPENAI_API_KEY
-   - PINECONE_API_KEY
-   - PINECONE_ENVIRONMENT
-   - PINECONE_INDEX_NAME
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   PINECONE_API_KEY=your_pinecone_api_key
+   PINECONE_ENVIRONMENT=your_pinecone_environment
+   PINECONE_INDEX_NAME=your_pinecone_index_name
+   ```
 
 ### Frontend Deployment (Vercel)
 
@@ -152,55 +239,16 @@ The frontend will be available at `http://localhost:3000`
 2. Connect your GitHub repository
 3. Set the following configuration:
    - Framework Preset: Next.js
-   - Root Directory: frontend
-   - Build Command: next build
-   - Output Directory: .next
-   - Install Command: npm install
-   - Development Command: npm run dev
+   - Root Directory: `frontend`
 
-4. Add the following environment variable in Vercel:
-   - NEXT_PUBLIC_API_URL (set to your deployed backend URL)
 
-## Features
-
-- Interactive chat interface for tennis-related queries
-- Historical match data analysis
-- Player statistics and insights
-- Real-time data processing
-
-## Troubleshooting
-
-### Backend Issues
-
-1. **Pinecone Setup**
-   - Ensure you've created an index in Pinecone with dimension 1536 (OpenAI's embedding size)
-   - The index name should match your PINECONE_INDEX_NAME environment variable
-   - Verify your Pinecone environment matches your API key
-
-2. **Data Ingestion Issues**
-   - If data ingestion fails, check your internet connection as it needs to download the tennis dataset
-   - Ensure you have at least 2GB of free disk space for the dataset
-   - The script creates a log file in the backend directory - check it for detailed error messages
-
-3. **OpenAI API Issues**
-   - Verify your OpenAI API key has sufficient credits
-   - If you get rate limit errors, the script will automatically retry with exponential backoff
-
-### Frontend Issues
-
-1. **API Connection**
-   - If the frontend can't connect to the backend, verify:
-     - Backend is running and accessible
-     - Your environment variables are correctly set
-     - CORS is properly configured for your deployment
-
-2. **Build Issues**
-   - Clear your Next.js cache: `rm -rf .next`
-   - Ensure all dependencies are installed: `npm install` or `yarn install`
+4. Add the following environment variables in Vercel:
+   ```
+   NEXT_PUBLIC_API_URL=your_backend_url
+   ```
 
 ## Development Notes
-
 - The backend uses FastAPI's automatic API documentation. Visit `/docs` to explore available endpoints
 - The tennis data is sourced from [Jeff Sackmann's tennis_atp repository](https://github.com/JeffSackmann/tennis_atp)
 - Vector embeddings are created using OpenAI's text-embedding-ada-002 model
-- The frontend is built with Next.js 14 and uses the App Router 
+- The frontend is built with Next.js 14 and uses the App Router
