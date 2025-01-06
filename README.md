@@ -1,15 +1,16 @@
 # TennisTorch 🎾
 
-TennisTorch is an AI-powered tennis analytics platform that provides insights and answers questions about tennis matches and statistics from the Open Era. The platform features a beautiful, modern interface with real-time semantic search capabilities.
+TennisTorch is an AI-powered tennis history answer engine that illuminates insights and answers questions about tennis matches and statistics from the Open Era. It intelligently retrieves and cites from every single professional match record from 1968-2024. The platform features a beautiful, modern interface with real-time semantic search capabilities.
 
 ## Features
 
 - 🤖 AI-powered natural language interface for tennis queries
 - 📊 Comprehensive ATP match data from the Open Era
-- 🔍 Semantic search with citation support
+- 🔍 Semantic search with citation to actual match records
 - 🏆 Detailed tournament and match information
 - 🎾 Surface-specific styling and match context
 - 📜 Query history with quick access to previous searches
+- 🔗 Shareable query URLs that persist across page refreshes
 - ⚡ Real-time updates and responsive design
 
 ## Tech Stack
@@ -252,3 +253,9 @@ The frontend will be available at `http://localhost:3000`
 - The tennis data is sourced from [Jeff Sackmann's tennis_atp repository](https://github.com/JeffSackmann/tennis_atp)
 - Vector embeddings are created using OpenAI's text-embedding-ada-002 model
 - The frontend is built with Next.js 14 and uses the App Router
+
+## Demo Video
+
+Watch the demo video to see TennisTorch in action:
+
+[![TennisTorch Demo](https://img.youtube.com/vi/2Geyjy1XnjA/0.jpg)](https://youtu.be/2Geyjy1XnjA)
